@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 let camera, scene, renderer;
 let activeCamera, frontalCamera, lateralCamera, topDownCamera, perspectiveCamera;
-let bRightWheel,bLeftWheel;
+let bRightWheel,bLeftWheel, luRightWheel,luLeftWheel, ldRightWheel,ldLeftWheel;
 let waist,body,abs,chest;
 let head, face, rightEye, leftEye, rightAntenna,leftAntenna;
 let legs, foot,thigh;
@@ -11,26 +11,16 @@ let legs, foot,thigh;
 
 
 // Auxiliar fucntion for wheels
-function createWheels() {
+function createWheels(parentGroup, positions, color) {
   const wheelGeo = new THREE.TorusGeometry(1, 1, 16);
-  const material = new THREE.MeshBasicMaterial({ color: 0xA64173b , wireframe: false });
-  const baseWheel = new THREE.Mesh(wheelGeo, material);
-  baseWheel.rotation.y = Math.PI / 2;
+  const material = new THREE.MeshBasicMaterial({ color, wireframe: false });
 
-
-  //body wheels
-  bRightWheel = baseWheel.clone();
-  bRightWheel.position.set(7, -2, 0);
-
-  bLeftWheel = baseWheel.clone();
-  bLeftWheel.position.set(-7, -2, 0);
-
-  body.add(bRightWheel);
-  body.add(bLeftWheel);
-
-  //leg wheels
-
-
+  positions.forEach(pos => {
+    const wheel = new THREE.Mesh(wheelGeo, material);
+    wheel.rotation.y = Math.PI / 2;
+    wheel.position.set(pos.x, pos.y, pos.z);
+    parentGroup.add(wheel);
+  });
 }
 
 /* Body Group Functions */
@@ -67,7 +57,11 @@ function createBody(x, y, z) {
   createWaist();
   createAbs();
   createChest();
-  createWheels();
+  createWheels(body, [
+  { x: 7, y: -2, z: 0 },
+  { x: -7, y: -2, z: 0 }
+  ], 0x64173b);
+
 
   scene.add(body);
 }
@@ -158,6 +152,15 @@ function createLegGroup(side) {
   const leg = new THREE.Mesh(legGeo, legMaterial);
   leg.position.set(0, -1.5, 0); 
   legGroup.add(leg);
+
+
+  // Create wheels
+  const wheelPositions = [
+    { x: side*3.5, y: -9.5, z: 0 },
+    { x: side*3.5, y: -4.5, z: 0 },
+  ];
+  createWheels(legGroup, wheelPositions, 0xA64173);
+  
 
   // Foot group
   const footGroup = new THREE.Group();
