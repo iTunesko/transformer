@@ -2,12 +2,76 @@ import * as THREE from "three";
 
 let camera, scene, renderer;
 let activeCamera, frontalCamera, lateralCamera, topDownCamera, perspectiveCamera;
+let head,waist,body,abs,chest;
+
+
+
+
+function createWaist() {
+  const waistGeo = new THREE.BoxGeometry(12,6,4);
+  const material = new THREE.MeshBasicMaterial({ color: 0xAA336A, wireframe: false });
+  waist = new THREE.Mesh(waistGeo, material);
+  waist.position.set(0, 0 , 0);
+  return waist;
+}
+
+function createAbs() {
+  const absGeo = new THREE.BoxGeometry(6,8,1)
+  const material = new THREE.MeshBasicMaterial({ color:0x64173b, wireframe: false });
+  abs = new THREE.Mesh(absGeo, material);
+  abs.position.set(0, 1 , 2);
+  return abs;
+}
+
+function createChest() {
+  const chestGeo = new THREE.BoxGeometry(16,8,4);
+  const material = new THREE.MeshBasicMaterial({ color: 0xAA336A, wireframe: false });
+  chest = new THREE.Mesh(chestGeo, material);
+  chest.position.set(0, 4 , 0);
+  return chest;
+}
+
+
+function createBody(x, y, z) {
+
+  body = new THREE.Group();
+
+  body.add(createWaist());
+  body.add(createAbs());
+  body.add(createChest());
+
+  scene.add(body);
+}
+
+// function addHead(obj, x, y, z, material) {
+
+//   const headGeometry = new THREE.BoxGeometry(4, 4, 4);
+//   const mesh = new THREE.Mesh(headGeometry, material);
+//   mesh.position.set(x, y - 3, z);
+//   obj.add(mesh);
+
+// }
+
+// function createHead(x, y, z) {
+//   head = new THREE.Object3D();
+
+//   const material = new THREE.MeshBasicMaterial({ color: 0xAA336A, wireframe: true });
+
+//   addHead(head, x, y, z, material);
+
+//   scene.add(head);
+
+//   head.position.set(x, y, z);
+// }
 
 function createScene() {
   scene = new THREE.Scene();
 
   scene.add(new THREE.AxesHelper(10));
   scene.background = new THREE.Color(0xffccff); 
+
+  createBody(0, 0, 0);
+
 }
 
 function createCamera(position) {
