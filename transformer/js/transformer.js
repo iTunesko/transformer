@@ -2,10 +2,36 @@ import * as THREE from "three";
 
 let camera, scene, renderer;
 let activeCamera, frontalCamera, lateralCamera, topDownCamera, perspectiveCamera;
+let bRightWheel,bLeftWheel;
 let waist,body,abs,chest;
 let head, face, rightEye, leftEye, rightAntenna,leftAntenna;
+let legs, foot,thigh;
 
 
+
+
+// Auxiliar fucntion for wheels
+function createWheels() {
+  const wheelGeo = new THREE.TorusGeometry(1, 1, 16);
+  const material = new THREE.MeshBasicMaterial({ color: 0xA64173b , wireframe: false });
+  const baseWheel = new THREE.Mesh(wheelGeo, material);
+  baseWheel.rotation.y = Math.PI / 2;
+
+
+  //body wheels
+  bRightWheel = baseWheel.clone();
+  bRightWheel.position.set(7, -2, 0);
+
+  bLeftWheel = baseWheel.clone();
+  bLeftWheel.position.set(-7, -2, 0);
+
+  body.add(bRightWheel);
+  body.add(bLeftWheel);
+
+  //leg wheels
+
+
+}
 
 /* Body Group Functions */
 function createWaist() {
@@ -41,6 +67,7 @@ function createBody(x, y, z) {
   createWaist();
   createAbs();
   createChest();
+  createWheels();
 
   scene.add(body);
 }
@@ -110,9 +137,55 @@ function createHead(x, y, z) {
   scene.add(head);
 
 }
-
 /***** End of Head functions *******/
 
+
+/***** legs Group Functions *****/
+function createLegGroup(side) {
+  const legGroup = new THREE.Group();
+  legGroup.position.set(side * 3.5, 0, 0); 
+
+  // Thigh
+  const thighMaterial = new THREE.MeshBasicMaterial({ color: 0x64173b, wireframe: false });
+  const thighGeo = new THREE.BoxGeometry(5, 13, 4);
+  thigh = new THREE.Mesh(thighGeo, thighMaterial);
+  thigh.position.set(0, -9, 0); 
+  legGroup.add(thigh);
+
+  // Lower leg
+  const legMaterial = new THREE.MeshBasicMaterial({ color: 0xAA336A, wireframe: false });
+  const legGeo = new THREE.BoxGeometry(3, 3, 4);
+  const leg = new THREE.Mesh(legGeo, legMaterial);
+  leg.position.set(0, -1.5, 0); 
+  legGroup.add(leg);
+
+  // Foot group
+  const footGroup = new THREE.Group();
+  footGroup.position.set(side*0.5, -15.5, 2); 
+
+  const footGeo = new THREE.BoxGeometry(7, 2, 6);
+  foot = new THREE.Mesh(footGeo, legMaterial);
+  footGroup.add(foot);
+
+  legGroup.add(footGroup);
+
+  return legGroup;
+}
+
+function createLegs(x, y, z) {
+  legs = new THREE.Group();
+  legs.position.set(x, y, z);
+
+  const rightLeg = createLegGroup(1);
+  const leftLeg = createLegGroup(-1);
+
+  legs.add(rightLeg);
+  legs.add(leftLeg);
+
+  scene.add(legs);
+}
+
+/***** End of legs functions *******/
 
 function createScene() {
   scene = new THREE.Scene();
@@ -122,8 +195,14 @@ function createScene() {
 
   createBody(0, 0, 0);
   createHead(0, 11, 0);
+  createLegs(0, -2, 0);
 
 }
+
+/** Arms Group Functions */
+
+
+/** End of arms group funtion */
 
 function createCamera(position) {
   camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
