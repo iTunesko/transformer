@@ -157,8 +157,8 @@ function createLegGroup(side) {
 
   // Create wheels
   const wheelPositions = [
+    { x: side*3.5, y: -14.5, z: 0 },
     { x: side*3.5, y: -9.5, z: 0 },
-    { x: side*3.5, y: -4.5, z: 0 },
   ];
   createWheels(legGroup, wheelPositions, 0xA64173);
   
