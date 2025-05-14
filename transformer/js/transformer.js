@@ -6,6 +6,7 @@ let bRightWheel,bLeftWheel, luRightWheel,luLeftWheel, ldRightWheel,ldLeftWheel;
 let waist,body,abs,chest;
 let head, face, rightEye, leftEye, rightAntenna,leftAntenna;
 let legs, foot,thigh;
+let arms, leftArmGroup, rightArmGroup;
 
 
 
@@ -187,8 +188,62 @@ function createLegs(x, y, z) {
 
   scene.add(legs);
 }
-
 /***** End of legs functions *******/
+
+
+
+
+/** Arms Group Functions */
+
+function createArm(side) {
+  const armGroup = new THREE.Group();
+
+  armGroup.position.x = side * 8; 
+
+  const juntaGeo = new THREE.BoxGeometry(1, 2, 4); 
+  const juntaMat = new THREE.MeshBasicMaterial({ color: 0x64173b});
+  const junta = new THREE.Mesh(juntaGeo, juntaMat);
+  junta.position.set(side*0.5, -2, 0); 
+
+  const armGeo = new THREE.BoxGeometry(4, 8, 4);
+  const armMat = new THREE.MeshBasicMaterial({ color:0xAA336A});
+  const arm = new THREE.Mesh(armGeo, armMat);
+  arm.position.set(side*3, -4, 0);
+
+  const forearmGeo = new THREE.BoxGeometry(4, 4, 8);
+  const forearmMat = new THREE.MeshBasicMaterial({ color:0x64173b});
+  const forearm = new THREE.Mesh(forearmGeo, forearmMat);
+  forearm.position.set(side*3, -10, 2);
+
+  const tubeGeo = new THREE.CylinderGeometry(0.5, 0.5,11, 16);
+  const tubeMat = new THREE.MeshBasicMaterial({ color:0x64173b});
+  const tube = new THREE.Mesh(tubeGeo, tubeMat);
+  tube.position.set(side*5.5, -2.5, 0);
+
+
+  armGroup.add(junta);
+  armGroup.add(arm);
+  armGroup.add(forearm);
+  armGroup.add(tube);
+
+  return armGroup;
+}
+
+function createArms(x, y, z) {
+  arms = new THREE.Group();
+  arms.position.set(x, y, z); 
+
+  leftArmGroup = createArm(-1);
+  rightArmGroup = createArm(1);
+
+  arms.add(leftArmGroup);
+  arms.add(rightArmGroup);
+
+  scene.add(arms);
+}
+
+/** End of arms group funtion */
+
 
 function createScene() {
   scene = new THREE.Scene();
@@ -199,13 +254,9 @@ function createScene() {
   createBody(0, 0, 0);
   createHead(0, 11, 0);
   createLegs(0, -2, 0);
+  createArms(0, 11, 0);
 
 }
-
-/** Arms Group Functions */
-
-
-/** End of arms group funtion */
 
 function createCamera(position) {
   camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
